@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 const router = Router();
 
-//(register user, Create User)
-router.post("/createUser", async (req: Request, res: Response) => {
+//register user, Create User
+router.post("/register", async (req: Request, res: Response) => {
 
     const { email, password } = req.body;
 
@@ -33,7 +33,7 @@ router.post("/createUser", async (req: Request, res: Response) => {
 })
 
 // login route, 
-router.post("/login", async (req: Request, res: Response) => {
+router.post("/login", async (req: Request, res: Response,) => {
     const { email, password } = req.body;
 
     try {
