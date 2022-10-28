@@ -13,5 +13,4 @@ app.enable('trust proxy')
 app.use(userController);
 app.use(productController);
 
-
 module.exports = app;
