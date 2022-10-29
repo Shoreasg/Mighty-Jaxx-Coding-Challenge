@@ -17,7 +17,7 @@ router.post("/register", async (req: Request, res: Response) => {
         // If email exist, means user exist.
         if (findUser) {
             // tell user that email is registered
-            return res.status(409).json({ Error: "Email already exists" })
+            return res.status(409).json({ Error: "Email already exists" });
         }
 
         // hashed the password and store their email and hash password in db
@@ -25,7 +25,7 @@ router.post("/register", async (req: Request, res: Response) => {
         const hashedPassword = await bcrypt.hash(password, 12);
         const newUser = new User({ email: email, password: hashedPassword });
         await newUser.save();
-        return res.status(200).json({ Message: "Create user successfully" })
+        return res.status(200).json({ Message: "Create user successfully" });
     }
     catch (err) {
         return res.status(500).json(err);
@@ -42,7 +42,7 @@ router.post("/login", async (req: Request, res: Response,) => {
         //if email don't exist, means user don't exist.
         if (!findUser) {
             // tell user that email don't exist
-            return res.status(404).json({ Error: "Email does not exist" })
+            return res.status(404).json({ Error: "Email does not exist" });
         }
 
         // else compare user password with our db hashed password
@@ -51,7 +51,7 @@ router.post("/login", async (req: Request, res: Response,) => {
         if(!checkPassword)
         {   
             //if compared and the result is false, we tell user he entered the wrong credentials
-            return res.status(401).json({Error: "Invalid credentials"})
+            return res.status(401).json({Error: "Invalid credentials"});
         }
 
         //else we create a token and respond the token to frontend

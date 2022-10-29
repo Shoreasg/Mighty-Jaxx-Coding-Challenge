@@ -21,7 +21,7 @@ const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
                 return res.status(401).json({ Error: "Token is invalid" });
             }
             // if token is really valid at this stage, get the payload user email,then add the user email in the req body.
-            req.user = user.email // req.user, define the type on custom.d.ts
+            req.user = user.email; // req.user, define the type on custom.d.ts
             next();
         })
     } else {
@@ -39,7 +39,13 @@ router.post('/addProduct', authMiddleWare, async (req: Request, res: Response) =
 
     if (checkUser) {
         try {
-            // first check for existing sku and title
+            //check if the user entered data contains any empty strings
+            if (typeof SKU === "string" && SKU.trim().length === 0 ||
+                typeof title === "string" && title.trim().length === 0 ||
+                typeof imageURL === "string" && imageURL.trim().length === 0) {
+                return res.status(400).json({ Error: "Invalid Request, check that it does not contain any empty strings" });
+            }
+            //check for existing sku and title
             const checkExistingSKU = await Product.findOne({ SKU: SKU });
             const checkExistingTitle = await Product.findOne({ title: title });
             const checkImageURL = await Product.findOne({ imageURL: imageURL });
@@ -73,10 +79,10 @@ router.post('/addProduct', authMiddleWare, async (req: Request, res: Response) =
 
 //edit
 router.put('/editProduct/:oldSKU', authMiddleWare, async (req: Request, res: Response) => {
-    const { newSKU, newTitle, newImageURL } = req.body
+    const { newSKU, newTitle, newImageURL } = req.body;
     const { oldSKU } = req.params;
     // double check if the user exist in our DB to make sure he is authenticated
-    const checkUser = await User.findOne({ email: req.user })
+    const checkUser = await User.findOne({ email: req.user });
     if (checkUser) {
         try {
             //search for the selected product to be updated in our db
@@ -85,15 +91,15 @@ router.put('/editProduct/:oldSKU', authMiddleWare, async (req: Request, res: Res
             if (selectedProduct) {
                 //check if the req body contains empty string, else give error
                 if (typeof newSKU === "string" && newSKU.trim().length === 0 ||
-                    typeof newTitle === "string" && newSKU.trim().length === 0 ||
-                    typeof newImageURL === "string" && newSKU.trim().length === 0) {
+                    typeof newTitle === "string" && newTitle.trim().length === 0 ||
+                    typeof newImageURL === "string" && newImageURL.trim().length === 0) {
                     return res.status(400).json({ Error: "Invalid Request, check that it does not contain any empty strings" });
                 }
 
                 //check if the new sku/title and imageurl exist in DB
                 const checkExistingSKU = await Product.findOne({ SKU: newSKU });
                 const checkExistingTitle = await Product.findOne({ title: newTitle });
-                const checkExistingImage = await Product.findOne({ imageURL: newImageURL })
+                const checkExistingImage = await Product.findOne({ imageURL: newImageURL });
 
 
                 if (checkExistingImage || checkExistingSKU || checkExistingTitle) {
@@ -104,7 +110,7 @@ router.put('/editProduct/:oldSKU', authMiddleWare, async (req: Request, res: Res
                     if ((checkExistingImage?._id.toString() !== undefined && checkExistingImage?._id.toString() !== selectedProduct._id.toString())
                         || (checkExistingSKU?._id.toString() !== undefined && checkExistingSKU?._id.toString() !== selectedProduct._id.toString()) ||
                         (checkExistingTitle?._id.toString() !== undefined && checkExistingTitle?._id.toString() !== selectedProduct._id.toString())) {
-                        return res.status(400).json({ Error: "Invalid Request, You have entered an existing image/sku/title" })
+                        return res.status(400).json({ Error: "Invalid Request, You have entered an existing image/sku/title" });
                     }
 
                 }
@@ -118,7 +124,7 @@ router.put('/editProduct/:oldSKU', authMiddleWare, async (req: Request, res: Res
             }
             else {
                 //else if selected item not found, tell user that the item he selected doesn't exist in the database
-                return res.status(400).json({ Error: "The item that you selected doesn't exist in the database!" })
+                return res.status(400).json({ Error: "The item that you selected doesn't exist in the database!" });
             }
         } catch (err) {
             return res.status(500).json(err);
@@ -162,16 +168,14 @@ router.delete("/deleteProduct/:oldSKU", authMiddleWare, async (req: Request, res
 
 // get all products
 
-router.get("/getProducts",authMiddleWare,async (req: Request, res: Response) =>
-{
-       // double check if the user exist in our DB to make sure he is authenticated
+router.get("/getProducts", authMiddleWare, async (req: Request, res: Response) => {
+    // double check if the user exist in our DB to make sure he is authenticated
     const checkUser = await User.findOne({ email: req.user });
 
-    if(checkUser)
-    {
+    if (checkUser) {
         try {
             const allProducts = await Product.find({});
-            res.status(200).json({Message:"Successfully retrived",allProducts});
+            res.status(200).json({ Message: "Successfully retrived", allProducts });
         } catch (err) {
             return res.status(500).json(err);
         }
