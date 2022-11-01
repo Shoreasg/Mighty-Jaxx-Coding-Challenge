@@ -6,7 +6,11 @@ const nextConfig = {
     remotePatterns:[
       {
         protocol: 'https',
-        hostname: 'mightymeta.world'
+        hostname: 'mightymeta.world', 
+      },
+      {
+        protocol: 'https',
+        hostname: 'soullesscitadel.com'
       }
     ]
   }

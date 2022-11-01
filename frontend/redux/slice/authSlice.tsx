@@ -65,12 +65,11 @@ export const authSlice = createSlice({
             state.loading = false;
             state.userInfo = "";
             state.error = action.payload;
+        }).addCase(checkUser.pending, (state) => {
+            state.loading = true;
+            state.userInfo = "";
+            state.error = "";
         })
-            .addCase(checkUser.pending, (state) => {
-                state.loading = true;
-                state.userInfo = "";
-                state.error = "";
-            })
     }
 })
 
