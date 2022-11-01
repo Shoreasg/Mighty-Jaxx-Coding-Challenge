@@ -15,12 +15,8 @@ const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
                 //if error, tell user that their token is invalid
                 return res.status(403).json({ Error: "Token is not valid!" });
             }
-            //if token is valid, check for expiry time next
-            if (user.exp * 1000 < new Date().getTime()) {
-                // if the current date time is greater than the expiry time, tell frontend that their token is invalid
-                return res.status(401).json({ Error: "Token is invalid" });
-            }
-            // if token is really valid at this stage, get the payload user email,then add the user email in the req body.
+
+            // if token is valid at this stage, get the payload user email,then add the user email in the req body.
             req.user = user.email; // req.user, define the type on custom.d.ts
             next();
         })
