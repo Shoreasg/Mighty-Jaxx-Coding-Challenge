@@ -1,7 +1,7 @@
-import { useAppSelector, useAppDispatch } from "../redux/hooks/hooks"
+import { useAppSelector, useAppDispatch } from "../../redux/hooks/hooks"
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { checkUser } from "../redux/slice/authSlice";
+import { checkUser } from "../../redux/slice/authSlice";
 import { toast } from 'react-toastify';
 export default function Dashboard() {
 
