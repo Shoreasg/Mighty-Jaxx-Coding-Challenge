@@ -4,10 +4,10 @@ const nextConfig = {
   swcMinify: true,
   images: {
     remotePatterns:[
-      {
-        protocol: 'https',
-        hostname: 'mightymeta.world'
-      }
+     {
+      protocol: "https",
+      hostname: "**",
+     }
     ]
   }
 }
