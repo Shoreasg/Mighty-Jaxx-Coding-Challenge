@@ -7,11 +7,18 @@ interface ProductState {
     status: any
 }
 
-interface ProductData {
+interface AddProductData {
     SKU: string;
     title: string;
     imageURL: string;
 }
+interface EditProductData {
+    newSKU: string;
+    newtitle: string;
+    newimageURL: string;
+    SKU: string;
+}
+
 
 const initialState: ProductState = {
     loading: false,
@@ -32,10 +39,33 @@ export const getProducts = createAsyncThunk('products/get', async () => {
 
 })
 
-export const addProducts = createAsyncThunk('products/add', async (productData: ProductData, thunkApi) => {
+export const addProducts = createAsyncThunk('products/add', async (productData: AddProductData, thunkApi) => {
     try {
         const config = { headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` } }
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/addProduct`, productData, config);
+        return response.data
+    } catch (err: any) {
+        return thunkApi.rejectWithValue(err.response.data.Error)
+    }
+
+})
+
+export const deleteProducts = createAsyncThunk('products/delete', async (sku: string, thunkApi) => {
+    try {
+        const config = { headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` } }
+        const response = await axios.delete(`${process.env.NEXT_PUBLIC_BACKEND_URL}/deleteProduct/${sku}`, config);
+        return response.data
+    } catch (err: any) {
+        return thunkApi.rejectWithValue(err.response.data.Error)
+    }
+
+})
+
+export const editProducts = createAsyncThunk('products/edit', async (productData: EditProductData, thunkApi) => {
+    try {
+        const {newSKU, newtitle, newimageURL, SKU} = productData;
+        const config = { headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` } }
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/editProduct/${SKU}`,{newSKU: newSKU, newTitle: newtitle, newImageURL: newimageURL}, config);
         return response.data
     } catch (err: any) {
         return thunkApi.rejectWithValue(err.response.data.Error)
@@ -63,6 +93,22 @@ export const productSlice = createSlice({
             state.loading = false;
             state.status = action.payload;
         }).addCase(addProducts.rejected, (state, action) => {
+            state.loading = false;
+            state.status = action.payload;
+        }).addCase(deleteProducts.pending, (state, action) => {
+            state.loading = true;
+        }).addCase(deleteProducts.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = action.payload;
+        }).addCase(deleteProducts.rejected, (state, action) => {
+            state.loading = false;
+            state.status = action.payload;
+        }).addCase(editProducts.pending, (state, action) => {
+            state.loading = true;
+        }).addCase(editProducts.fulfilled, (state, action) => {
+            state.loading = false;
+            state.status = action.payload;
+        }).addCase(editProducts.rejected, (state, action) => {
             state.loading = false;
             state.status = action.payload;
         })

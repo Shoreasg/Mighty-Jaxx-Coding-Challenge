@@ -3,8 +3,9 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { checkUser } from "../../redux/slice/authSlice";
 import { toast } from 'react-toastify';
-import { getProducts } from "../../redux/slice/productSlice";
+import { addProducts, getProducts } from "../../redux/slice/productSlice";
 import ProductCards from "../../components/Cards/ProductCards";
+import Swal from "sweetalert2";
 export default function Dashboard() {
 
   interface ProductListing {
@@ -33,6 +34,39 @@ export default function Dashboard() {
   }, [])
 
 
+  const handleAddButton: any = () => {
+    Swal.fire({
+      title: 'Enter the following details to add new product',
+      showCancelButton: true,
+      confirmButtonText: "Add Product",
+      icon: 'info',
+      html: '<input id="SKU" type="text" placeholder="SKU" class="swal2-input">' +
+        '<input type="text" placeholder="title" id="title" class="swal2-input">' +
+        '<input type="text" placeholder="imageURL" id="imageURL" class="swal2-input">',
+      preConfirm: () => {
+        const SKU: string = (document.getElementById('SKU') as HTMLInputElement).value;
+        const title: string = (document.getElementById('title') as HTMLInputElement).value;
+        const imageURL: string = (document.getElementById('imageURL') as HTMLInputElement).value;
+        dispatch(addProducts({ SKU: SKU, title: title, imageURL: imageURL })).then((res: any) => {
+          if (res.type === 'products/add/fulfilled') {
+            toast.success(res.payload.Message)
+            dispatch(getProducts())
+          }
+          else if (res.type === 'products/add/rejected' && res.payload === "Token is not valid!") {
+            toast.error("Session expired, Please Relogin")
+            router.push("/")
+          }
+          else if (res.type === 'products/add/rejected') {
+            toast.error(res.payload)
+          }
+
+        })
+      }
+
+    })
+  }
+
+
   const mapProductsInfo = productInfo.map((product: ProductListing, key: number) => {
     return (<ProductCards key={key} SKU={product.SKU} title={product.title} imageURL={product.imageURL} />)
   })
@@ -48,7 +82,7 @@ export default function Dashboard() {
               <div className="text-3xl font-bold leading-tight tracking-tight text-gray-900">List of Products</div>
               <button
                 type="button"
-                onClick={()=> router.push("/dashboard/addproduct")}
+                onClick={handleAddButton}
                 className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 Add Product
