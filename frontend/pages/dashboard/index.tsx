@@ -3,9 +3,11 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { checkUser } from "../../redux/slice/authSlice";
 import { toast } from 'react-toastify';
-import { addProducts, getProducts } from "../../redux/slice/productSlice";
+import { addProducts, clear, getProducts } from "../../redux/slice/productSlice";
 import ProductCards from "../../components/Cards/ProductCards";
 import Swal from "sweetalert2";
+
+
 export default function Dashboard() {
 
   interface ProductListing {
@@ -17,8 +19,11 @@ export default function Dashboard() {
 
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const isLoading: boolean = useAppSelector((state) => state.user.loading)
-  const productInfo: any = useAppSelector((state) => state.product.productInfo)
+  const isLoading: boolean = useAppSelector((state) => state.user.loading);
+  const userInfo: string = useAppSelector((state)=> state.user.userInfo);
+  const isProductLoading: boolean = useAppSelector((state) => state.product.loading);
+  const productInfo: any = useAppSelector((state) => state.product.productInfo);
+  const filterValue: string = useAppSelector((state) => state.product.filterValue);
   useEffect(() => {
     const token: string = localStorage.getItem('userToken') ?? '';
     dispatch(checkUser({ jwtToken: token })).then((res: any) => {
@@ -26,7 +31,7 @@ export default function Dashboard() {
         router.push('/dashboard')
       }
       else if (res.type === "auth/checkUser/rejected") {
-        toast.error(res.payload)
+        toast.error(res.payload);
         router.push("/")
       }
     })
@@ -54,6 +59,7 @@ export default function Dashboard() {
           }
           else if (res.type === 'products/add/rejected' && res.payload === "Token is not valid!") {
             toast.error("Session expired, Please Relogin")
+            dispatch(clear());
             router.push("/")
           }
           else if (res.type === 'products/add/rejected') {
@@ -67,16 +73,19 @@ export default function Dashboard() {
   }
 
 
-  const mapProductsInfo = productInfo.map((product: ProductListing, key: number) => {
-    return (<ProductCards key={key} SKU={product.SKU} title={product.title} imageURL={product.imageURL} />)
-  })
+  const mapProductsInfo = [...productInfo].sort((a: ProductListing, b: ProductListing) => (a.SKU < b.SKU) ? -1 : 1).filter((product: ProductListing) => filterValue ? product.title.toLowerCase().includes(filterValue.toLowerCase()) : true)
+    .map((product: ProductListing, key: number) => (<ProductCards key={key} SKU={product.SKU} title={product.title} imageURL={product.imageURL} />));
+  // sort by sku, filter if user search, map the proudcts accordingly.
 
-
-  mapProductsInfo;
   return (
     <>
-      {isLoading ? null :
+      {isLoading || isProductLoading ? <div className="flex flex-col items-center justify-center h-screen">
+        <div className="divide-y pt-2 divide-gray-200 overflow-y-scroll w-3/4 h-3/4 rounded-lg bg-white shadow animate-pulse flex flex-col justify-center">
+          <h1 className="text-center text-lg font-bold text-gray-500">Loading</h1>
+        </div>
+      </div> :
         <div className="flex flex-col items-center justify-center h-screen">
+          <h1 className="text-xl font-bold mb-2 text-white pb-2 text-center">Welcome: {userInfo.split('@')[0]}</h1>
           <div className="divide-y pt-2 divide-gray-200 overflow-y-scroll w-3/4 h-3/4 rounded-lg bg-white shadow">
             <div className="px-4 py-5 sm:px-6 flex flex-row justify-between">
               <div className="text-3xl font-bold leading-tight tracking-tight text-gray-900">List of Products</div>
@@ -95,6 +104,5 @@ export default function Dashboard() {
         </div>
       }
     </>
-
   )
 }

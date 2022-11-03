@@ -10,7 +10,6 @@ interface ProductListing {
     SKU: string,
     title: string,
     imageURL: string;
-
 }
 
 export default function ProductCards({ SKU, title, imageURL }: ProductListing) {
@@ -37,12 +36,10 @@ export default function ProductCards({ SKU, title, imageURL }: ProductListing) {
                     else if (res.type === 'products/delete/rejected') {
                         toast.error(res.payload)
                     }
-
                 })
             }
-
         })
-    }
+    };
 
 
     const handleEditButton: any = () => {
@@ -70,16 +67,14 @@ export default function ProductCards({ SKU, title, imageURL }: ProductListing) {
                     else if (res.type === 'products/edit/rejected') {
                         toast.error(res.payload)
                     }
-
                 })
             }
-
         })
-    }
+    };
 
     return (
         <div className="w-full p-2 h-full flex flex-col justify-center bg-slate-800 rounded-lg drop-shadow-md">
-            <div className="flex justify-center">
+            <div className="flex justify-center h-3/4">
                 <Image width={200} height={100} src={imageURL} alt={"NFT image"} />
             </div>
             <div className="pt-2">
