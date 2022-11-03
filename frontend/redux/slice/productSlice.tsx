@@ -108,6 +108,7 @@ export const productSlice = createSlice({
         }).addCase(addProducts.rejected, (state, action) => {
             state.loading = false;
             state.status = action.payload;
+            state.filterValue = "";
         }).addCase(deleteProducts.pending, (state, action) => {
             state.loading = true;
         }).addCase(deleteProducts.fulfilled, (state, action) => {
@@ -117,6 +118,7 @@ export const productSlice = createSlice({
         }).addCase(deleteProducts.rejected, (state, action) => {
             state.loading = false;
             state.status = action.payload;
+            state.filterValue = "";
         }).addCase(editProducts.pending, (state, action) => {
             state.loading = true;
         }).addCase(editProducts.fulfilled, (state, action) => {
@@ -126,6 +128,7 @@ export const productSlice = createSlice({
         }).addCase(editProducts.rejected, (state, action) => {
             state.loading = false;
             state.status = action.payload;
+            state.filterValue = "";
         })
     }
 })
