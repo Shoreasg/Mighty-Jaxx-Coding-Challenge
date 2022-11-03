@@ -3,6 +3,7 @@ import axios from 'axios';
 
 interface ProductState {
     loading: boolean,
+    filterValue: string,
     productInfo: any
     status: any
 }
@@ -22,6 +23,7 @@ interface EditProductData {
 
 const initialState: ProductState = {
     loading: false,
+    filterValue: "",
     productInfo: [],
     status: ""
 }
@@ -63,9 +65,9 @@ export const deleteProducts = createAsyncThunk('products/delete', async (sku: st
 
 export const editProducts = createAsyncThunk('products/edit', async (productData: EditProductData, thunkApi) => {
     try {
-        const {newSKU, newtitle, newimageURL, SKU} = productData;
+        const { newSKU, newtitle, newimageURL, SKU } = productData;
         const config = { headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` } }
-        const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/editProduct/${SKU}`,{newSKU: newSKU, newTitle: newtitle, newImageURL: newimageURL}, config);
+        const response = await axios.put(`${process.env.NEXT_PUBLIC_BACKEND_URL}/editProduct/${SKU}`, { newSKU: newSKU, newTitle: newtitle, newImageURL: newimageURL }, config);
         return response.data
     } catch (err: any) {
         return thunkApi.rejectWithValue(err.response.data.Error)
@@ -77,6 +79,16 @@ export const productSlice = createSlice({
     name: 'product',
     initialState,
     reducers: {
+        filter: (state, action) => {
+            state.loading = false;
+            state.filterValue = action.payload;
+        },
+        clear: (state) => {
+            state.loading = false;
+            state.filterValue = "";
+            state.productInfo = [];
+            state.status = "";
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(getProducts.pending, (state) => {
@@ -92,6 +104,7 @@ export const productSlice = createSlice({
         }).addCase(addProducts.fulfilled, (state, action) => {
             state.loading = false;
             state.status = action.payload;
+            state.filterValue = "";
         }).addCase(addProducts.rejected, (state, action) => {
             state.loading = false;
             state.status = action.payload;
@@ -100,6 +113,7 @@ export const productSlice = createSlice({
         }).addCase(deleteProducts.fulfilled, (state, action) => {
             state.loading = false;
             state.status = action.payload;
+            state.filterValue = "";
         }).addCase(deleteProducts.rejected, (state, action) => {
             state.loading = false;
             state.status = action.payload;
@@ -108,6 +122,7 @@ export const productSlice = createSlice({
         }).addCase(editProducts.fulfilled, (state, action) => {
             state.loading = false;
             state.status = action.payload;
+            state.filterValue = "";
         }).addCase(editProducts.rejected, (state, action) => {
             state.loading = false;
             state.status = action.payload;
@@ -115,5 +130,5 @@ export const productSlice = createSlice({
     }
 })
 
-
+export const { filter, clear } = productSlice.actions;
 export default productSlice.reducer;
