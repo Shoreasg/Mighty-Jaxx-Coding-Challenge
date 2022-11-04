@@ -1,8 +1,24 @@
 import { Request, Response, Router, NextFunction } from "express";
+import { z } from "zod";
 const jwt = require('jsonwebtoken')
 const Product = require('../models/product')
 const User = require('../models/user')
 const router = Router();
+
+
+const addProductSchema = z.object({
+    SKU: z.string().trim().min(1).regex(/^\d+$/),
+    title: z.string().trim().min(1),
+    imageURL: z.string().trim().min(1).url(),
+}).required().strict();
+
+const editProductSchema = z.object({
+    newSKU: z.string().trim().min(1),
+    newtitle: z.string().trim().min(1),
+    newimageURL: z.string().trim().min(1).url(),
+}).required().strict();
+
+type addProductType = z.infer<typeof addProductSchema>;
 
 //auth middleware, check if its an authenticated user who send the request.
 const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
@@ -27,109 +43,116 @@ const authMiddleWare = (req: Request, res: Response, next: NextFunction) => {
 
 
 // add product
-router.post('/addProduct', authMiddleWare, async (req: Request, res: Response) => {
+router.post('/addProduct', authMiddleWare, async (req: Request<addProductType>, res: Response) => {
 
-    const { SKU, title, imageURL } = req.body;
-    // double check if the user exist in our DB to make sure he is authenticated
-    const checkUser = await User.findOne({ email: req.user })
+    const parsed = addProductSchema.safeParse(req.body);
 
-    if (checkUser) {
-        try {
-            //check if the user entered data contains any empty strings
-            if (typeof SKU === "string" && SKU.trim().length === 0 ||
-                typeof title === "string" && title.trim().length === 0 ||
-                typeof imageURL === "string" && imageURL.trim().length === 0) {
-                return res.status(400).json({ Error: "Invalid Request, check that it does not contain any empty strings" });
+    if (parsed.success) {
+        const checkUser = await User.findOne({ email: req.user })
+
+        // double check if the user exist in our DB to make sure he is authenticated
+        if (checkUser) {
+            try {
+
+
+                //check for existing sku and title
+                const checkExistingSKU = await Product.findOne({ SKU: parsed.data.SKU });
+                const checkExistingTitle = await Product.findOne({ title: parsed.data.title });
+                const checkImageURL = await Product.findOne({ imageURL: parsed.data.imageURL });
+
+                // if it exist, tell user that the product with that SKU exist
+                if (checkExistingSKU || checkExistingTitle || checkImageURL) {
+                    return res.status(400).json({ Error: "Existing SKU/title/image in database!" });
+                }
+
+                //else create new product with the above request body
+
+                const newProduct = new Product({
+                    SKU: parsed.data.SKU, title: parsed.data.title, imageURL: parsed.data.imageURL,
+                });
+
+                await newProduct.save();
+                res.status(201).json({ Message: "Successfully created new product in database!" });
+
+            } catch (err) {
+                return res.status(500).json(err);
             }
-            //check for existing sku and title
-            const checkExistingSKU = await Product.findOne({ SKU: SKU });
-            const checkExistingTitle = await Product.findOne({ title: title });
-            const checkImageURL = await Product.findOne({ imageURL: imageURL });
 
-            // if it exist, tell user that the product with that SKU exist
-            if (checkExistingSKU || checkExistingTitle || checkImageURL) {
-                return res.status(400).json({ Error: "Existing SKU/title/image in database!" });
-            }
 
-            //else create new product with the above request body
-
-            const newProduct = new Product({
-                SKU: SKU, title: title, imageURL: imageURL,
-            });
-
-            await newProduct.save();
-            res.status(201).json({ Message: "Successfully created new product in database!" });
-
-        } catch (err) {
-            return res.status(500).json(err);
         }
-
-
+        else {
+            // tell frontend that this guy don't exist in our DB, don't allow him to do request
+            res.status(403).json("You are not allowed to do this request!");
+        }
     }
     else {
-        // tell frontend that this guy don't exist in our DB, don't allow him to do request
-        res.status(403).json("You are not allowed to do this request!");
+        //check if the user entered data contains any empty strings
+        return res.status(400).json({ Error: "1. No empty data in any categories 2. Only SKU with digits are allowed 3. Only URLs are allowed in imageURL" });
     }
 
 })
 
 //edit
 router.put('/editProduct/:oldSKU', authMiddleWare, async (req: Request, res: Response) => {
-    const { newSKU, newTitle, newImageURL } = req.body;
+
+    const parsed = editProductSchema.safeParse(req.body);
     const { oldSKU } = req.params;
-    // double check if the user exist in our DB to make sure he is authenticated
-    const checkUser = await User.findOne({ email: req.user });
-    if (checkUser) {
-        try {
-            //search for the selected product to be updated in our db
-            const selectedProduct = await Product.findOne({ SKU: oldSKU });
-            //if found, most likely will always be found unless frontend send wrong data.
-            if (selectedProduct) {
-                //check if the req body contains empty string, else give error
-                if (typeof newSKU === "string" && newSKU.trim().length === 0 ||
-                    typeof newTitle === "string" && newTitle.trim().length === 0 ||
-                    typeof newImageURL === "string" && newImageURL.trim().length === 0) {
-                    return res.status(400).json({ Error: "Invalid Request, check that it does not contain any empty strings" });
-                }
 
-                //check if the new sku/title and imageurl exist in DB
-                const checkExistingSKU = await Product.findOne({ SKU: newSKU });
-                const checkExistingTitle = await Product.findOne({ title: newTitle });
-                const checkExistingImage = await Product.findOne({ imageURL: newImageURL });
+    if (parsed.success) {
+        const checkUser = await User.findOne({ email: req.user });
+        // double check if the user exist in our DB to make sure he is authenticated
+        if (checkUser) {
+            try {
+                //search for the selected product to be updated in our db
+                const selectedProduct = await Product.findOne({ SKU: oldSKU });
+                //if found, most likely will always be found unless frontend send wrong data.
+                if (selectedProduct) {
+                    //check if the req body contains empty string, else give error
 
 
-                if (checkExistingImage || checkExistingSKU || checkExistingTitle) {
+                    //check if the new sku/title and imageurl exist in DB
+                    const checkExistingSKU = await Product.findOne({ SKU: parsed.data.newSKU });
+                    const checkExistingTitle = await Product.findOne({ title: parsed.data.newtitle });
+                    const checkExistingImage = await Product.findOne({ imageURL: parsed.data.newimageURL });
 
-                    // if any of the above is true, next i check if the id of the existing product is not the same as the id of the user selected product.
-                    // if not the same, it means that there is actually another product with the same sku/image/title in the db. If its the same,
-                    // it means that the selected product and the new data has the same sku/image/title, we shouldn't block them if its coming from the same product id. 
-                    if ((checkExistingImage?._id.toString() !== undefined && checkExistingImage?._id.toString() !== selectedProduct._id.toString())
-                        || (checkExistingSKU?._id.toString() !== undefined && checkExistingSKU?._id.toString() !== selectedProduct._id.toString()) ||
-                        (checkExistingTitle?._id.toString() !== undefined && checkExistingTitle?._id.toString() !== selectedProduct._id.toString())) {
-                        return res.status(400).json({ Error: "Invalid Request, You have entered an existing image/sku/title" });
+
+                    if (checkExistingImage || checkExistingSKU || checkExistingTitle) {
+
+                        // if any of the above is true, next i check if the id of the existing product is not the same as the id of the user selected product.
+                        // if not the same, it means that there is actually another product with the same sku/image/title in the db. If its the same,
+                        // it means that the selected product and the new data has the same sku/image/title, we shouldn't block them if its coming from the same product id. 
+                        if ((checkExistingImage?._id.toString() !== undefined && checkExistingImage?._id.toString() !== selectedProduct._id.toString())
+                            || (checkExistingSKU?._id.toString() !== undefined && checkExistingSKU?._id.toString() !== selectedProduct._id.toString()) ||
+                            (checkExistingTitle?._id.toString() !== undefined && checkExistingTitle?._id.toString() !== selectedProduct._id.toString())) {
+                            return res.status(400).json({ Error: "Invalid Request, You have entered an existing image/sku/title" });
+                        }
+
                     }
 
+                    //after all checks, update the product and tell user update successfully
+                    await Product.findByIdAndUpdate(selectedProduct._id, { SKU: parsed.data.newSKU, title: parsed.data.newtitle, imageURL: parsed.data.newimageURL });
+
+                    return res.status(200).json({
+                        Message: "Updated Sucessfully",
+                    })
                 }
-
-                //after all checks, update the product and tell user update successfully
-                await Product.findByIdAndUpdate(selectedProduct._id, { SKU: newSKU, title: newTitle, imageURL: newImageURL });
-
-                return res.status(200).json({
-                    Message: "Updated Sucessfully",
-                })
+                else {
+                    //else if selected item not found, tell user that the item he selected doesn't exist in the database
+                    return res.status(400).json({ Error: "The item that you selected doesn't exist in the database!" });
+                }
+            } catch (err) {
+                return res.status(500).json(err);
             }
-            else {
-                //else if selected item not found, tell user that the item he selected doesn't exist in the database
-                return res.status(400).json({ Error: "The item that you selected doesn't exist in the database!" });
-            }
-        } catch (err) {
-            return res.status(500).json(err);
+        }
+        else {
+            // tell frontend that this guy don't exist in our DB, don't allow him to do request
+            res.status(403).json("You are not allowed to do this request!");
         }
     }
     else {
-        // tell frontend that this guy don't exist in our DB, don't allow him to do request
-        res.status(403).json("You are not allowed to do this request!");
+        return res.status(400).json({ Error: "1. No empty data in any categories 2. Only SKU with digits are allowed 3. Only URLs are allowed in imageURL" });
     }
+
 })
 
 

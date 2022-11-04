@@ -47,7 +47,7 @@ export default function Dashboard() {
       icon: 'info',
       html: '<input id="SKU" type="text" placeholder="SKU" class="swal2-input">' +
         '<input type="text" placeholder="title" id="title" class="swal2-input">' +
-        '<input type="text" placeholder="imageURL" id="imageURL" class="swal2-input">',
+        '<input type="text" placeholder="image URL" id="imageURL" class="swal2-input">',
       preConfirm: () => {
         const SKU: string = (document.getElementById('SKU') as HTMLInputElement).value;
         const title: string = (document.getElementById('title') as HTMLInputElement).value;
