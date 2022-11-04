@@ -1,37 +1,130 @@
-# Coding Challenge for Full Stack Engineers
+# MightyJaxx Admin Dashboard
 
-## Requirements
-- React 
-- Any state management library. Redux is preferred, but no penalty for using other state management libraries. No props drilling
-- MongoDB or Firestore database
-- Node.JS
-- Express.JS
+## Demo Links
+[Frontend](https://mighty-jaxx-coding-challenge.vercel.app/)
 
-You have 14 days upon receiving this test to complete and submit it back to us
+[Backend](https://mighty-jaxx-be.herokuapp.com/)
 
-## Instructions
-The purpose of this code challenge is to build an admin dashboard with authentication protection and the ability to add new products.
 
-1. Clone this repository and create your own GitHub repository.
-2. Push your git repository to GitHub.
-3. Initialize a new React project and Node.JS project. 
-4. The website should make API calls to the Node.JS app and not interact with the database directly.
-5. Create the login page with the following features: 
-   - Text inputs for email and password.
-   - Submit button.
-   - Show an error message for incorrect credentials.
-   - Make the page responsive for mobile and desktop devices.
-   - Redirect to the admin dashboard page (to be built in the next step) for correct credentials.
-6. Build the admin dashboard page:
-   - Show a list of products (the products should be fetched from a database). Each product has the following data: SKU, title and image.
-   - Add the option to add a new product (should be added to the database as well).
-   - Add the option to edit an existing product (should be edited in the database as well).
-   - Add the option to remove an existing product (should be removed from the database as well).
-   - Add a logout button that redirects to the login page. 
-   - Make the page responsive for mobile and desktop devices.
-7. When you are done, send us the link to your GitHub repository with a clear readme file and also deploy it on a small server such as Heroku/Vercel and send us the link to test
+## Repositories
+[Frontend Repo](https://github.com/Shoreasg/Mighty-Jaxx-Coding-Challenge/tree/main/frontend)
 
-## Bonus
-Bonus points for adding a search bar in the admin dashboard to search for products. 
+[Backend Repo](https://github.com/Shoreasg/Mighty-Jaxx-Coding-Challenge/tree/main/backend)
 
+
+# Introduction
+
+This was an assignment by Mighty Jaxx. Task was to create an admin dashboard with login function and CRUD.
+Details can be found [here](https://github.com/Mighty-Jaxx-International-Pte-Ltd/Coding-Challenge-for-Full-Stack-Engineers) 
+
+
+
+# Features:
+
+- User is able to login using the following credentials (Email: MightyJaxx@test.com, Password: MightyJaxx@123)
+- User is able to add new products into the dashboard
+- User is able to edit existing items in dashboard
+- User is able to delete items on dashboard
+
+
+
+# Screenshots:
+
+## Mockup
+![Mockup](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/msg312288392-224573.jpg?token=GHSAT0AAAAAABTANYCGBQ3UIR6TXK7ZJQXUYS2YV5A)
+## Login Page
+
+![Login Page](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/Login.JPG?token=GHSAT0AAAAAABTANYCHMKXFLD2UQDQYUPFAYS2YVLA)
+
+## Dashboard Page
+
+![Dashboard Page](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/Category.JPG?token=GHSAT0AAAAAABTANYCGAE7WMN6ATEXBZ7JUYS2YUIQ)
+
+## Add Product Page
+
+![Add Product Page](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/Choose.JPG?token=GHSAT0AAAAAABTANYCHM2DVBCQCCGNL5XDAYS2YU5Q)
+
+## Edit Product Page
+
+
+![Edit Product Page](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/Details.JPG?token=GHSAT0AAAAAABTANYCH3QN7J4L5P7PBDD4EYS2YVEA)
+
+## Delete Product Page
+
+
+![Delete Product Page](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/Details.JPG?token=GHSAT0AAAAAABTANYCH3QN7J4L5P7PBDD4EYS2YVEA)
+
+
+# Technologies used
+
+
+## FrontEnd
+- [NextJs](https://nextjs.org/)
+- [Redux ToolKit](https://redux-toolkit.js.org/)
+- [Axios](https://axios-http.com/)
+- [react-hook-form](https://react-hook-form.com/)
+- [react-toastify](https://fkhadra.github.io/react-toastify/introduction/)
+- [sweetalert2](https://sweetalert2.github.io/)
+
+
+
+## BackEnd
+- [Node.js](https://nodejs.org/en/)
+- [Express](http://expressjs.com/)
+- [Mongoose](https://mongoosejs.com/)
+- [bcrypt](https://github.com/kelektiv/node.bcrypt.js)
+- [cors](https://github.com/expressjs/cors)
+- [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)
+- [nodemon](https://nodemon.io/)
+- [zod](https://zod.dev/)
+
+
+
+# Reflection
+
+This is my second time working on a project using typescript. Tried new tools such as zod, redux tool kit and jsonwebtoken. Overall, enjoyed this take home assignment as i get to try and learn new tools.
+
+
+
+
+# Setup
+
+To run this project, install it locally using npm:
+
+# Frontend
+
+```
+$ git clone
+$ npm i
+Add NEXT_PUBLIC_BACKEND_URL= to .env
+$ npm run dev
+
+```
+
+# Backend
+
+```
+$ git clone
+$ npm i
+Add
+PORT=
+DATABASE=
+MONGO_USER=
+MONGO_PASSWORD=
+MONGO_BASE_URL=
+SECRET=
+JWTSECRET=
+FRONTEND_URL=
+to .env
+$ tsc
+$ npm start
+
+```
+
+
+## Contributors
+
+
+
+[Shoreasg](https://github.com/Shoreasg) 
 

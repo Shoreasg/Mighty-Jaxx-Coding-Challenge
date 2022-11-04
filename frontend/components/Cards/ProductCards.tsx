@@ -50,7 +50,7 @@ export default function ProductCards({ SKU, title, imageURL }: ProductListing) {
             icon: 'info',
             html: `<input value="${SKU}" id="SKU" type="text" class="swal2-input">` +
                 `<input value="${title}" id="title" type="text" class="swal2-input">` +
-                `<input value="${imageURL}" id="imageURL" type="text" class="swal2-input">`,
+                `<input value="${imageURL}" id="image URL" type="text" class="swal2-input">`,
             preConfirm: () => {
                 const newSKU: string = (document.getElementById('SKU') as HTMLInputElement).value;
                 const newtitle: string = (document.getElementById('title') as HTMLInputElement).value;

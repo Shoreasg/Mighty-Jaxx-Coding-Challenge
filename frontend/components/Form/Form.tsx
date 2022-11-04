@@ -49,10 +49,13 @@ export default function Form() {
                             </span>)}
                             <div className="w-full">
                                 <input type="password" placeholder="Password" className="px-4 py-2 w-full  bg-gray-50"
-                                    {...register("password", { required: true })} />
+                                    {...register("password", { required: true,minLength: 6 })} />
                             </div>
                             {errors.password && errors.password.type === "required" && (<span className="text-red-500 text-xs italic p-2">
                                 This field is required
+                            </span>)}
+                            {errors.password && errors.password.type === "minLength" && (<span className="text-red-500 text-xs italic p-2">
+                                Password minimum 6 characters
                             </span>)}
                         </div>
                         <button className="w-full mt-5 bg-[#3077ff] text-white py-2 rounded-md font-semibold tracking-tight" onClick={handleSubmit(onSubmitData)}>Login</button>
