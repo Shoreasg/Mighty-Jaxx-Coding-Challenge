@@ -31,28 +31,29 @@ Details can be found [here](https://github.com/Mighty-Jaxx-International-Pte-Ltd
 # Screenshots:
 
 ## Mockup
-![Mockup](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/msg312288392-224573.jpg?token=GHSAT0AAAAAABTANYCGBQ3UIR6TXK7ZJQXUYS2YV5A)
+![Mockup](https://raw.githubusercontent.com/Shoreasg/Mighty-Jaxx-Coding-Challenge/main/screenshots/Dashboard.jpeg)
+![Mockup2](https://raw.githubusercontent.com/Shoreasg/Mighty-Jaxx-Coding-Challenge/main/screenshots/Login.jpeg)
 ## Login Page
 
-![Login Page](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/Login.JPG?token=GHSAT0AAAAAABTANYCHMKXFLD2UQDQYUPFAYS2YVLA)
+![Login Page](https://raw.githubusercontent.com/Shoreasg/Mighty-Jaxx-Coding-Challenge/main/screenshots/LoginDashboard.JPG)
 
 ## Dashboard Page
 
-![Dashboard Page](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/Category.JPG?token=GHSAT0AAAAAABTANYCGAE7WMN6ATEXBZ7JUYS2YUIQ)
+![Dashboard Page](https://raw.githubusercontent.com/Shoreasg/Mighty-Jaxx-Coding-Challenge/main/screenshots/dashboard.JPG)
 
 ## Add Product Page
 
-![Add Product Page](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/Choose.JPG?token=GHSAT0AAAAAABTANYCHM2DVBCQCCGNL5XDAYS2YU5Q)
+![Add Product Page](https://raw.githubusercontent.com/Shoreasg/Mighty-Jaxx-Coding-Challenge/main/screenshots/AddProduct.JPG)
 
 ## Edit Product Page
 
 
-![Edit Product Page](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/Details.JPG?token=GHSAT0AAAAAABTANYCH3QN7J4L5P7PBDD4EYS2YVEA)
+![Edit Product Page](https://raw.githubusercontent.com/Shoreasg/Mighty-Jaxx-Coding-Challenge/main/screenshots/EditProduct.JPG)
 
 ## Delete Product Page
 
 
-![Delete Product Page](https://raw.githubusercontent.com/Shoreasg/WookieeWarsFE/main/Screenshots/Details.JPG?token=GHSAT0AAAAAABTANYCH3QN7J4L5P7PBDD4EYS2YVEA)
+![Delete Product Page](https://raw.githubusercontent.com/Shoreasg/Mighty-Jaxx-Coding-Challenge/main/screenshots/DeleteProduct.JPG)
 
 
 # Technologies used
