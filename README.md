@@ -85,7 +85,11 @@ Details can be found [here](https://github.com/Mighty-Jaxx-International-Pte-Ltd
 
 This is my second time working on a project using typescript. Tried new tools such as zod, redux tool kit and jsonwebtoken. Overall, enjoyed this take home assignment as i get to try and learn new tools.
 
+# Assumptions
 
+1: I assumed that no register form is needed as this is an admin page, hence registration should be done in private
+
+2: I assumed that uploading of image requires the user to enter the image url. This means that the user have already uploaded the image to a image hosting site and just need to enter the URL.
 
 
 # Setup

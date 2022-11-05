@@ -1,24 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios';
-
-interface ProductState {
-    loading: boolean,
-    filterValue: string,
-    productInfo: any
-    status: any
-}
-
-interface AddProductData {
-    SKU: string;
-    title: string;
-    imageURL: string;
-}
-interface EditProductData {
-    newSKU: string;
-    newtitle: string;
-    newimageURL: string;
-    SKU: string;
-}
+import { EditProductData, ProductData, ProductState } from '../../types';
 
 
 const initialState: ProductState = {
@@ -41,7 +23,7 @@ export const getProducts = createAsyncThunk('products/get', async () => {
 
 })
 
-export const addProducts = createAsyncThunk('products/add', async (productData: AddProductData, thunkApi) => {
+export const addProducts = createAsyncThunk('products/add', async (productData: ProductData, thunkApi) => {
     try {
         const config = { headers: { Authorization: `Bearer ${localStorage.getItem("userToken")}` } }
         const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/addProduct`, productData, config);

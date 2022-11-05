@@ -11,14 +11,13 @@ export default function Home() {
   const dispatch = useAppDispatch();
   useEffect(() => {
     const token: string = localStorage.getItem('userToken') ?? '';
-    dispatch(checkUser({ jwtToken: token })).then((res: any) => {
+    dispatch(checkUser({ jwtToken: token })).then((res: any) => { //when reach login page, check if user token is still valid, yes? redirect user to dashboard, else stay at login page
       if (res.type === "auth/checkUser/fulfilled") {
         router.push('/dashboard')
       }
       else if (res.type === 'auth/checkUser/rejected"') {
         toast.error(res.payload)
         router.push("/")
-
       }
     })
   }, [])

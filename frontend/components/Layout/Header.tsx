@@ -14,7 +14,7 @@ export default function Header() {
     const dispatch = useAppDispatch();
     const router = useRouter();
 
-    const handleLogout = () => {
+    const handleLogout = () => { //handle logout, clear jwt token in local storage, reset all states, redirect user to login page
         dispatch(logout());
         dispatch(clear());
         toast.success("Log out successfully")
