@@ -15,8 +15,8 @@ const addProductSchema = z.object({
 
 const editProductSchema = z.object({
     newSKU: z.string().trim().min(1),
-    newtitle: z.string().trim().min(1),
-    newimageURL: z.string().trim().min(1).url(),
+    newTitle: z.string().trim().min(1),
+    newImageURL: z.string().trim().min(1).url(),
 }).required().strict();
 
 type addProductType = z.infer<typeof addProductSchema>;
@@ -94,8 +94,8 @@ router.put('/editProduct/:oldSKU', authMiddleWare, async (req: Request, res: Res
 
                     //check if the new sku/title and imageurl exist in DB
                     const checkExistingSKU = await Product.findOne({ SKU: parsed.data.newSKU });
-                    const checkExistingTitle = await Product.findOne({ title: parsed.data.newtitle });
-                    const checkExistingImage = await Product.findOne({ imageURL: parsed.data.newimageURL });
+                    const checkExistingTitle = await Product.findOne({ title: parsed.data.newTitle });
+                    const checkExistingImage = await Product.findOne({ imageURL: parsed.data.newImageURL });
 
 
                     if (checkExistingImage || checkExistingSKU || checkExistingTitle) {
@@ -112,7 +112,7 @@ router.put('/editProduct/:oldSKU', authMiddleWare, async (req: Request, res: Res
                     }
 
                     //after all checks, update the product and tell user update successfully
-                    await Product.findByIdAndUpdate(selectedProduct._id, { SKU: parsed.data.newSKU, title: parsed.data.newtitle, imageURL: parsed.data.newimageURL });
+                    await Product.findByIdAndUpdate(selectedProduct._id, { SKU: parsed.data.newSKU, title: parsed.data.newTitle, imageURL: parsed.data.newImageURL });
 
                     return res.status(200).json({
                         Message: "Updated Sucessfully",
