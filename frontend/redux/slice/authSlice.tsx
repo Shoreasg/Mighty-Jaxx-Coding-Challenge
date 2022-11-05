@@ -1,16 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios';
-
-interface AuthState {
-    loading: boolean,
-    userInfo: string,
-    error: any,
-}
-
-interface FormData {
-    email: string;
-    password: string;
-}
+import { AuthState, FormData } from '../../types';
 
 const initialState: AuthState = {
     loading: false,

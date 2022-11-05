@@ -6,16 +6,10 @@ import { toast } from 'react-toastify';
 import { addProducts, clear, getProducts } from "../../redux/slice/productSlice";
 import ProductCards from "../../components/Cards/ProductCards";
 import Swal from "sweetalert2";
+import { ProductData } from "../../types";
 
 
 export default function Dashboard() {
-
-  interface ProductListing {
-    SKU: string,
-    title: string,
-    imageURL: string;
-
-  }
 
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -24,7 +18,7 @@ export default function Dashboard() {
   const isProductLoading: boolean = useAppSelector((state) => state.product.loading);
   const productInfo: any = useAppSelector((state) => state.product.productInfo);
   const filterValue: string = useAppSelector((state) => state.product.filterValue);
-  useEffect(() => {
+  useEffect(() => { //when reach dashboard page, check if the user had a valid token aka autenticated. Yes? stay in dashboard page, else redirect user to login page
     const token: string = localStorage.getItem('userToken') ?? '';
     dispatch(checkUser({ jwtToken: token })).then((res: any) => {
       if (res.type === "auth/checkUser/fulfilled") {
@@ -35,12 +29,12 @@ export default function Dashboard() {
         router.push("/")
       }
     })
-    dispatch(getProducts());
+    dispatch(getProducts()); //also, call get all product listing when reach this page
   }, [])
 
 
   const handleAddButton: any = () => {
-    Swal.fire({
+    Swal.fire({ // if user click on add product, let user enter new product details
       title: 'Enter the following details to add new product',
       showCancelButton: true,
       confirmButtonText: "Add Product",
@@ -52,17 +46,17 @@ export default function Dashboard() {
         const SKU: string = (document.getElementById('SKU') as HTMLInputElement).value;
         const title: string = (document.getElementById('title') as HTMLInputElement).value;
         const imageURL: string = (document.getElementById('imageURL') as HTMLInputElement).value;
-        dispatch(addProducts({ SKU: SKU, title: title, imageURL: imageURL })).then((res: any) => {
+        dispatch(addProducts({ SKU: SKU, title: title, imageURL: imageURL })).then((res: any) => { //call add api, if success, show success message, update listing
           if (res.type === 'products/add/fulfilled') {
             toast.success(res.payload.Message)
             dispatch(getProducts())
           }
-          else if (res.type === 'products/add/rejected' && res.payload === "Token is not valid!") {
+          else if (res.type === 'products/add/rejected' && res.payload === "Token is not valid!") { // if token expired, tell user session expired, redirect user to login page and do nothing
             toast.error("Session expired, Please Relogin")
             dispatch(clear());
             router.push("/")
           }
-          else if (res.type === 'products/add/rejected') {
+          else if (res.type === 'products/add/rejected') { //if add failed, tell user why
             toast.error(res.payload)
           }
 
@@ -73,8 +67,8 @@ export default function Dashboard() {
   }
 
 
-  const mapProductsInfo = [...productInfo].sort((a: ProductListing, b: ProductListing) => (a.SKU < b.SKU) ? -1 : 1).filter((product: ProductListing) => filterValue ? product.title.toLowerCase().includes(filterValue.toLowerCase()) : true)
-    .map((product: ProductListing, key: number) => (<ProductCards key={key} SKU={product.SKU} title={product.title} imageURL={product.imageURL} />));
+  const mapProductsInfo = [...productInfo].sort((a: ProductData, b: ProductData) => (a.SKU < b.SKU) ? -1 : 1).filter((product: ProductData) => filterValue ? product.title.toLowerCase().includes(filterValue.toLowerCase()) : true)
+    .map((product: ProductData, key: number) => (<ProductCards key={key} SKU={product.SKU} title={product.title} imageURL={product.imageURL} />));
   // sort by sku, filter if user search, map the proudcts accordingly.
 
   return (

@@ -5,35 +5,30 @@ import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import { useAppDispatch } from '../../redux/hooks/hooks';
 import { deleteProducts, editProducts, getProducts } from '../../redux/slice/productSlice';
+import { ProductData } from '../../types';
 
-interface ProductListing {
-    SKU: string,
-    title: string,
-    imageURL: string;
-}
-
-export default function ProductCards({ SKU, title, imageURL }: ProductListing) {
+export default function ProductCards({ SKU, title, imageURL }: ProductData) {
 
     const dispatch = useAppDispatch();
     const router = useRouter();
 
-    const handleDeleteButton: any = () => {
+    const handleDeleteButton: any = () => { //when user click on delete button, ask user if they want to delete
         Swal.fire({
             title: 'Are you sure you want to delete this product?',
             showCancelButton: true,
             confirmButtonText: "Confirm",
             icon: 'warning',
             preConfirm: () => {
-                dispatch(deleteProducts(SKU)).then((res: any) => {
+                dispatch(deleteProducts(SKU)).then((res: any) => { //if yes, delete successful toast shown, update products listing on dashboard
                     if (res.type === 'products/delete/fulfilled') {
                         toast.success(res.payload.Message)
                         dispatch(getProducts())
                     }
-                    else if (res.type === 'products/delete/rejected' && res.payload === "Token is not valid!") {
+                    else if (res.type === 'products/delete/rejected' && res.payload === "Token is not valid!") { //if token expired when they delete, do nothing and redirect user back to login page
                         toast.error("Session expired, Please Relogin")
                         router.push("/")
                     }
-                    else if (res.type === 'products/delete/rejected') {
+                    else if (res.type === 'products/delete/rejected') { //else if token not expired, tell user why delete failed
                         toast.error(res.payload)
                     }
                 })
@@ -42,7 +37,7 @@ export default function ProductCards({ SKU, title, imageURL }: ProductListing) {
     };
 
 
-    const handleEditButton: any = () => {
+    const handleEditButton: any = () => { // when user click on edit button, ask user the new details
         Swal.fire({
             title: 'Enter the following details to edit product',
             showCancelButton: true,
@@ -55,16 +50,16 @@ export default function ProductCards({ SKU, title, imageURL }: ProductListing) {
                 const newSKU: string = (document.getElementById('SKU') as HTMLInputElement).value;
                 const newtitle: string = (document.getElementById('title') as HTMLInputElement).value;
                 const newimageURL: string = (document.getElementById('imageURL') as HTMLInputElement).value;
-                dispatch(editProducts({ newSKU, newtitle, newimageURL, SKU })).then((res: any) => {
-                    if (res.type === 'products/edit/fulfilled') {
+                dispatch(editProducts({ newSKU, newtitle, newimageURL, SKU })).then((res: any) => { //if user provided valid details
+                    if (res.type === 'products/edit/fulfilled') { //edit successful, send toast success, update products listing
                         toast.success(res.payload.Message)
                         dispatch(getProducts())
                     }
-                    else if (res.type === 'products/edit/rejected' && res.payload === "Token is not valid!") {
+                    else if (res.type === 'products/edit/rejected' && res.payload === "Token is not valid!") { //if token expired while user edit, redirect him to login page and do nothing
                         toast.error("Session expired, Please Relogin")
                         router.push("/")
                     }
-                    else if (res.type === 'products/edit/rejected') {
+                    else if (res.type === 'products/edit/rejected') { //if token not expired, tell user why edit failed
                         toast.error(res.payload)
                     }
                 })

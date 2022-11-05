@@ -3,25 +3,22 @@ import { useAppDispatch, useAppSelector } from "../../redux/hooks/hooks";
 import { loginUser } from "../../redux/slice/authSlice";
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/router'
+import { FormData } from "../../types";
 
 export default function Form() {
-    type Inputs = {
-        email: string,
-        password: string,
-    };
 
-    const { register, handleSubmit, formState: { errors } } = useForm<Inputs>();
+     const { register, handleSubmit, formState: { errors } } = useForm<FormData>(); //use react hook form to handle the form login
     const router = useRouter();
     const dispatch = useAppDispatch();
     const isLoading: boolean = useAppSelector((state) => state.user.loading)
 
-    const onSubmitData: SubmitHandler<Inputs> = data => {
+    const onSubmitData: SubmitHandler<FormData> = data => {
         dispatch(loginUser(data)).then((res: any) => {
-            if (res.type === 'auth/login/fulfilled') {
+            if (res.type === 'auth/login/fulfilled') { //when user enter details, call login api, if success, tell user login success, redirect user to dashboard
                 toast.success("Login successful")
                 router.push('/dashboard')
             }
-            else if (res.type === 'auth/login/rejected') {
+            else if (res.type === 'auth/login/rejected') { // else tell user why login failed
                 toast.error(res.payload)
             }
         })
