@@ -67,7 +67,8 @@ export default function Dashboard() {
   }
 
 
-  const mapProductsInfo = [...productInfo].sort((a: ProductData, b: ProductData) => (a.SKU < b.SKU) ? -1 : 1).filter((product: ProductData) => filterValue ? product.title.toLowerCase().includes(filterValue.toLowerCase()) : true)
+  console.log([...productInfo])
+  const mapProductsInfo = [...productInfo].sort((a: ProductData, b: ProductData) => {return Number(a.SKU) - Number(b.SKU)}).filter((product: ProductData) => filterValue ? product.title.toLowerCase().includes(filterValue.toLowerCase()) : true)
     .map((product: ProductData, key: number) => (<ProductCards key={key} SKU={product.SKU} title={product.title} imageURL={product.imageURL} />));
   // sort by sku, filter if user search, map the proudcts accordingly.
 
